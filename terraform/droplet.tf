@@ -30,6 +30,11 @@ provider "digitalocean" {
   token = var.do_token
 }
 
+# Get the personal project
+data "digitalocean_project" "personal" {
+  name = "personal"
+}
+
 # Create a VPC
 resource "digitalocean_vpc" "web_vpc" {
   name     = "simple-http-vpc"
@@ -52,11 +57,20 @@ resource "digitalocean_droplet" "ubuntu_droplet" {
   ssh_keys = var.ssh_key_ids
   
   # User data script to set up the environment
-  # user_data = file("${path.module}/scripts/init.sh")
+  user_data = file("${path.module}/scripts/server.sh")
 }
 
 # Output the droplet IP
 output "droplet_ip" {
   value = digitalocean_droplet.ubuntu_droplet.ipv4_address
+}
+
+# Assign resources to personal project
+resource "digitalocean_project_resources" "project_resources" {
+  project = data.digitalocean_project.personal.id
+  resources = [
+    digitalocean_droplet.ubuntu_droplet.urn,
+    # digitalocean_vpc.web_vpc.urn
+  ]
 }
 
