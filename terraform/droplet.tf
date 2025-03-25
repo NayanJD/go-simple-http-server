@@ -43,7 +43,7 @@ resource "digitalocean_vpc" "web_vpc" {
 }
 
 # Create a new Droplet
-resource "digitalocean_droplet" "ubuntu_droplet" {
+resource "digitalocean_droplet" "server_droplet" {
   name     = "go-server"
   size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
   image    = "ubuntu-22-04-x64"
@@ -60,16 +60,38 @@ resource "digitalocean_droplet" "ubuntu_droplet" {
   user_data = file("${path.module}/scripts/server.sh")
 }
 
+resource "digitalocean_droplet" "test_droplet" {
+  name     = "test-server"
+  size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
+  image    = "ubuntu-22-04-x64"
+  region   = "blr1"  # Bangalore 1 region
+  vpc_uuid = digitalocean_vpc.web_vpc.id
+  
+  # Enable monitoring
+  monitoring = true
+  
+  # SSH keys from environment variable
+  ssh_keys = var.ssh_key_ids
+  
+  # User data script to set up the environment
+  user_data = file("${path.module}/scripts/test.sh")
+}
+
 # Output the droplet IP
-output "droplet_ip" {
-  value = digitalocean_droplet.ubuntu_droplet.ipv4_address
+output "server_ip" {
+  value = digitalocean_droplet.server_droplet.ipv4_address
+}
+
+output "test_ip" {
+  value = digitalocean_droplet.test_droplet.ipv4_address
 }
 
 # Assign resources to personal project
 resource "digitalocean_project_resources" "project_resources" {
   project = data.digitalocean_project.personal.id
   resources = [
-    digitalocean_droplet.ubuntu_droplet.urn,
+    digitalocean_droplet.server_droplet.urn,
+    digitalocean_droplet.test_droplet.urn,
     # digitalocean_vpc.web_vpc.urn
   ]
 }
