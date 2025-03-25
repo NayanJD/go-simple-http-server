@@ -45,7 +45,8 @@ resource "digitalocean_vpc" "web_vpc" {
 # Create a new Droplet
 resource "digitalocean_droplet" "server_droplet" {
   name     = "go-server"
-  size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
+  # size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
+  size = "c-2"
   image    = "ubuntu-22-04-x64"
   region   = "blr1"  # Bangalore 1 region
   vpc_uuid = digitalocean_vpc.web_vpc.id
@@ -82,8 +83,16 @@ output "server_ip" {
   value = digitalocean_droplet.server_droplet.ipv4_address
 }
 
+output "server_ip_private" {
+  value = digitalocean_droplet.server_droplet.ipv4_address_private
+}
+
 output "test_ip" {
   value = digitalocean_droplet.test_droplet.ipv4_address
+}
+
+output "test_ip_private" {
+  value = digitalocean_droplet.test_droplet.ipv4_address_private
 }
 
 # Assign resources to personal project
