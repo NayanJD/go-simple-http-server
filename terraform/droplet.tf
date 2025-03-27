@@ -46,7 +46,7 @@ resource "digitalocean_vpc" "web_vpc" {
 resource "digitalocean_droplet" "server_droplet" {
   name     = "go-server"
   # size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
-  size = "c-2"
+  size = "c-4"
   image    = "ubuntu-22-04-x64"
   region   = "blr1"  # Bangalore 1 region
   vpc_uuid = digitalocean_vpc.web_vpc.id

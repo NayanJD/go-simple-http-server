@@ -9,10 +9,10 @@ import (
 func main() {
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 
-		logger := slog.With("component", "server")
+		// logger := slog.With("component", "server")
 
-		logger.Info("received request")
-		defer logger.Info("handled request")
+		// logger.Info("received request")
+		// defer logger.Info("handled request")
 
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
