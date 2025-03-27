@@ -17,3 +17,5 @@ With basic droplet size `s-2vcpu-4gb`, request rate achieved ~13k req/s.
 With compute droplet size `c-2`, request rate achieved ~13k req/s.
 
 With compute droplet size `c-4`, request rate achieved ~39k req/s.
+
+With compute droplet size `c-4` & logging disabled, request rate achieved ~65k req/s.
