@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	_ "net/http/pprof"
 )
 
 func main() {
