@@ -28,11 +28,11 @@ func main() {
 	})
 
 	server := &http.Server{
-		Addr:    ":9000",
-		Handler: mux,
-		// MaxHeaderBytes:    1 << 20,
-		// IdleTimeout:       0, // Prevent idle connections from blocking
-		// ReadHeaderTimeout: 0, // Prevent slow readers from blocking
+		Addr:              ":9000",
+		Handler:           mux,
+		MaxHeaderBytes:    1 << 20,
+		IdleTimeout:       0, // Prevent idle connections from blocking
+		ReadHeaderTimeout: 0, // Prevent slow readers from blocking
 	}
 
 	slog.Info("Listening on 0.0.0.0:9000")
