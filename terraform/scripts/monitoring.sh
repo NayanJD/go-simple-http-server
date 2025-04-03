@@ -2,6 +2,16 @@
 
 apt-get update
 
+apt install -y git
+
+# Add docker GPG and repository
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+apt-get update
+
+# Install containerd
+apt install -y containerd
+
 arch=$(dpkg --print-architecture)
 
 # Get and install nerdctl
