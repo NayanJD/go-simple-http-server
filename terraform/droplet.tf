@@ -78,6 +78,23 @@ resource "digitalocean_droplet" "test_droplet" {
   user_data = file("${path.module}/scripts/test.sh")
 }
 
+resource "digitalocean_droplet" "monitoring_droplet" {
+  name     = "monitoring-server"
+  size     = "s-2vcpu-4gb"  # 4GB RAM, 2 CPUs, 80GB NVMe SSD
+  image    = "debian-12-x64"
+  region   = "blr1"  # Bangalore 1 region
+  vpc_uuid = digitalocean_vpc.web_vpc.id
+  
+  # Enable monitoring
+  monitoring = true
+  
+  # SSH keys from environment variable
+  ssh_keys = var.ssh_key_ids
+  
+  # User data script to set up the environment
+  user_data = file("${path.module}/scripts/monitoring.sh")
+}
+
 # Output the droplet IP
 output "server_ip" {
   value = digitalocean_droplet.server_droplet.ipv4_address
@@ -95,12 +112,21 @@ output "test_ip_private" {
   value = digitalocean_droplet.test_droplet.ipv4_address_private
 }
 
+output "monitoring_ip" {
+  value = digitalocean_droplet.monitoring_droplet.ipv4_address
+}
+
+output "monitoring_ip_private" {
+  value = digitalocean_droplet.monitoring_droplet.ipv4_address_private
+}
+
 # Assign resources to personal project
 resource "digitalocean_project_resources" "project_resources" {
   project = data.digitalocean_project.personal.id
   resources = [
     digitalocean_droplet.server_droplet.urn,
     digitalocean_droplet.test_droplet.urn,
+    digitalocean_droplet.monitoring_droplet.urn,
     # digitalocean_vpc.web_vpc.urn
   ]
 }

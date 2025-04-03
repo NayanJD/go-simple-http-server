@@ -7,25 +7,34 @@ import (
 	"runtime"
 
 	_ "net/http/pprof"
+
+	"simplehttp/src/pkg/instrumentation"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	prometheus.MustRegister(instrumentation.InFlightGauge, instrumentation.Counter, instrumentation.Duration, instrumentation.ResponseSize)
+
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+	handleHello := promhttp.InstrumentHandlerInFlight(instrumentation.InFlightGauge,
+		promhttp.InstrumentHandlerDuration(instrumentation.Duration.MustCurryWith(prometheus.Labels{"handler": "hello"}),
+			promhttp.InstrumentHandlerCounter(instrumentation.Counter,
+				promhttp.InstrumentHandlerResponseSize(instrumentation.ResponseSize,
+					http.HandlerFunc(HandleHello),
+				),
+			),
+		),
+	)
 
-		// logger := slog.With("component", "server")
+	mux.Handle("/hello", handleHello)
 
-		// logger.Info("received request")
-		// defer logger.Info("handled request")
-
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{ "message": "hi!" }`))
-	})
+	mux.Handle("/metrics", promhttp.Handler())
 
 	server := &http.Server{
 		Addr:              ":9000",
@@ -40,4 +49,30 @@ func main() {
 		slog.Error("Error while serving server", "err", err)
 		os.Exit(1)
 	}
+}
+
+func HandleHello(w http.ResponseWriter, r *http.Request) {
+
+	// logger := slog.With("component", "server")
+
+	// logger.Info("received request")
+	// defer logger.Info("handled request")
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{ "message": "hi!" }`))
+}
+
+func InstrumentHandlerFunc(h http.HandlerFunc) http.HandlerFunc {
+
+	requestCounter := prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "http_request_count",
+		Help: "No of request counter",
+	}, []string{"code", "method", "handler"})
+
+	prometheus.MustRegister(requestCounter)
+
+	h = promhttp.InstrumentHandlerCounter(requestCounter, h)
+
+	return h
 }
