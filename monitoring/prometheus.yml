@@ -4,13 +4,18 @@ global:
 scrape_configs:
   - job_name: prometheus
     static_configs:
-      - targets: 
+      - targets:
          - localhost:9090
   - job_name: simple_server
     static_configs:
-      - targets: 
-         - dev.ndas.in:9000
-  - job_name: node
+      - targets:
+         - ${GO_SERVER_IP}:9000
+  - job_name: simple_server_node
     static_configs:
       - targets:
-         - node-exporter:9100
+         - ${GO_SERVER_IP}:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: service
+        replacement: "go-server"
+

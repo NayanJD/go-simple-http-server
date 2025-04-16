@@ -2,6 +2,8 @@
 
 apt-get update
 
+arch=$(dpkg --print-architecture)
+
 apt install -y git
 
 # Add docker GPG and repository
@@ -18,3 +20,8 @@ arch=$(dpkg --print-architecture)
 wget -q "https://github.com/containerd/nerdctl/releases/download/v1.7.5/nerdctl-full-1.7.5-linux-${arch}.tar.gz"
 tar Cxzf /usr/local "nerdctl-full-1.7.5-linux-${arch}.tar.gz"
 nerdctl --version
+
+echo 'alias n="nerdctl"' >>~/.bashrc
+
+# Clone this repo
+git clone https://github.com/NayanJD/go-simple-http-server.git /root/simplehttp
