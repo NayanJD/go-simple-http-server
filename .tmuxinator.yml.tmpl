@@ -49,16 +49,16 @@ windows:
   - go-server:
       layout: even-horizontal
       panes:
-        - ssh root@${GO_SERVER_IP}
-        - ssh root@${GO_SERVER_IP}
+        - SERVER_IP="${GO_SERVER_IP}"; ssh root@${GO_SERVER_IP}
+        - SERVER_IP="${TEST_SERVER_IP}"; ssh root@${GO_SERVER_IP}
   - test-server:
       layout: even-horizontal
       panes:
-        - ssh root@${TEST_SERVER_IP}
-        - ssh root@${TEST_SERVER_IP}
+        - SERVER_IP="${TEST_SERVER_IP}"; ssh root@${TEST_SERVER_IP}
+        - SERVER_IP="${TEST_SERVER_IP}"; ssh root@${TEST_SERVER_IP}
   - monitoring-server:
       layout: even-horizontal
       panes:
-        - ssh root@${MONITORING_SERVER_IP}
-        - ssh root@${MONITORING_SERVER_IP}
+        - SERVER_IP="${MONITORING_SERVER_IP}"; ssh root@${MONITORING_SERVER_IP}
+        - SERVER_IP="${TEST_SERVER_IP}"; ssh root@${MONITORING_SERVER_IP}
 
