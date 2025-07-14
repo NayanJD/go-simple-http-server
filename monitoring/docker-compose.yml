@@ -1,14 +1,9 @@
 version: '3'
-networks:
-  localprom:
-    driver: bridge
 services:
   prometheus:
     image: prom/prometheus
     volumes:
       - "../prometheus.yml:/etc/prometheus/prometheus.yml"
-    networks:
-      - localprom
     ports:
       - 9090:9090
 
@@ -21,8 +16,6 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SECURITY_ADMIN_USER=admin
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
-    networks:
-      - localprom
     ports:
       - 3000:3000
     depends_on:
