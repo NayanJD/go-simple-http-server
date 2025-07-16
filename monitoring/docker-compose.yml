@@ -11,7 +11,7 @@ services:
   grafana:
     image: grafana/grafana
     volumes:
-      - ./grafana/provisioning/conf.yml:/usr/share/grafana/conf/provisioning/dashboards/local-conf.yml
+      - ./grafana/provisioning/conf.yml:/etc/grafana/provisioning/dashboards/local-conf.yml
       - ./grafana/provisioning/dashboards:/var/lib/grafana/dashboards
     network_mode: host
     environment:
