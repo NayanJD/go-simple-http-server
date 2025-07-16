@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "eervwwqwhvy80d"
+        "uid": "fes31nycea70gd"
       },
       "fieldConfig": {
         "defaults": {
@@ -136,5 +136,5 @@
   "timezone": "browser",
   "title": "TCP Stats",
   "uid": "7bd2f9e6-368f-4722-a543-1a5b33865af8",
-  "version": 3
+  "version": 1
 }
